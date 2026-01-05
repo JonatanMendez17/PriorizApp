@@ -1,0 +1,14 @@
+/**
+ * Archivo principal de estilos
+ * Importa todos los módulos CSS
+ */
+
+@import url('./variables.css');
+@import url('./base.css');
+@import url('./filters.css');
+@import url('./calendar.css');
+@import url('./events.css');
+@import url('./modal.css');
+@import url('./context-menu.css');
+@import url('./backup.css');
+@import url('./animations.css');

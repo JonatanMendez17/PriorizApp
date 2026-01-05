@@ -1,0 +1,138 @@
+/**
+ * Estilos del modal
+ */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: var(--panel);
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    width: 320px;
+    box-shadow: var(--shadow-lg);
+    pointer-events: auto;
+    position: relative;
+    backdrop-filter: blur(20px);
+    animation: modalSlideIn 0.2s ease-out;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-icon {
+    color: var(--jonatan);
+    flex-shrink: 0;
+    stroke: currentColor;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-body label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.modal-body input,
+.modal-body select {
+    background: var(--card);
+    border: 2px solid var(--grid);
+    color: var(--text);
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.modal-body input:focus,
+.modal-body select:focus {
+    outline: none;
+    border-color: var(--jonatan);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background: rgba(30, 39, 66, 0.8);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+}
+
+.modal-actions button:first-child {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.modal-actions button:first-child:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.modal-actions button.cancel {
+    background: var(--card);
+    color: var(--text);
+    border: 2px solid var(--grid);
+}
+
+.modal-actions button.cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.close {
+    color: var(--muted);
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.close:hover {
+    color: var(--text);
+    background: rgba(255,255,255,0.1);
+}
+

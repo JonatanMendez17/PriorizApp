@@ -1,0 +1,68 @@
+/**
+ * Estilos de eventos/actividades
+ */
+
+.event {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    min-height: 24px;
+    border-radius: 8px;
+    font-size: 12px;
+    padding: 4px 8px;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+    outline: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: calc(100% - 4px);
+}
+
+.event:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+}
+
+.event:focus {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+}
+
+.event.dragging {
+    opacity: 0.5;
+    z-index: 1000;
+}
+
+/* Colores de personas */
+.jonatan { 
+    background: linear-gradient(135deg, var(--jonatan) 0%, #2563eb 100%);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.mariana { 
+    background: linear-gradient(135deg, var(--mariana) 0%, #9333ea 100%);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.caleb { 
+    background: linear-gradient(135deg, var(--caleb) 0%, #16a34a 100%);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.catalina { 
+    background: linear-gradient(135deg, var(--catalina) 0%, #db2777 100%);
+    border-color: rgba(236, 72, 153, 0.3);
+}
+

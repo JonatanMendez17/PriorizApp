@@ -1,0 +1,60 @@
+/**
+ * Estilos de controles de backup
+ */
+
+.backup-controls {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.backup-btn {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.backup-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: white;
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.export-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+.export-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.import-btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.import-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.import-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+

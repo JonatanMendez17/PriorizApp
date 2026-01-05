@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Organizador Semanal</title>
+<link rel="stylesheet" href="src/css/styles.css">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3Cpath d='M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01'%3E%3C/path%3E%3C/svg%3E">
+</head>
+<body>
+
+<h1>Organizador Semanal</h1>
+
+<div class="filters">
+    <div class="filters-left">
+    <label class="toggle-switch">
+        <input type="checkbox" checked onchange="toggle('jonatan')">
+        <span class="toggle-slider"></span>
+        <span class="toggle-label">Jonatan</span>
+    </label>
+    <label class="toggle-switch">
+        <input type="checkbox" onchange="toggle('mariana')">
+        <span class="toggle-slider"></span>
+        <span class="toggle-label">Mariana</span>
+    </label>
+    <label class="toggle-switch">
+        <input type="checkbox" onchange="toggle('caleb')">
+        <span class="toggle-slider"></span>
+        <span class="toggle-label">Caleb</span>
+    </label>
+    <label class="toggle-switch">
+        <input type="checkbox" onchange="toggle('catalina')">
+        <span class="toggle-slider"></span>
+        <span class="toggle-label">Catalina</span>
+    </label>
+    </div>
+    
+    <div class="backup-controls">
+        <button onclick="exportBackup()" class="backup-btn export-btn" title="Exportar Copia de Seguridad">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+        </button>
+        <label class="backup-btn import-btn" title="Importar Copia de Seguridad">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <input type="file" accept=".json" onchange="importBackup(event)" style="display: none;">
+        </label>
+    </div>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<!-- Menú contextual -->
+<div id="context-menu" class="context-menu">
+    <div class="context-menu-item" id="context-add">Agregar</div>
+    <div class="context-menu-item" id="context-edit">Editar</div>
+    <div class="context-menu-item" id="context-delete">Eliminar</div>
+</div>
+
+<!-- Modal para agregar actividad -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>
+            <svg class="modal-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path>
+            </svg>
+            <span id="modal-title-text">Agregar Actividad</span>
+        </h2>
+        <div class="modal-body">
+            <label>
+                Persona:
+                <select id="modal-person">
+                    <option value="jonatan">Jonatan</option>
+                    <option value="mariana">Mariana</option>
+                    <option value="caleb">Caleb</option>
+                    <option value="catalina">Catalina</option>
+                </select>
+            </label>
+            <label>
+                Actividad:
+                <input type="text" id="modal-title" placeholder="Nombre de la actividad" autofocus>
+            </label>
+            <div class="modal-actions">
+                <button onclick="saveEventFromModal()">Agregar</button>
+                <button onclick="closeModal()" class="cancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="src/js/script.js"></script>
+
+</body>
+</html>

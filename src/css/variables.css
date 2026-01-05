@@ -1,0 +1,26 @@
+/**
+ * Variables CSS globales
+ * Define colores, sombras y otros valores reutilizables
+ */
+
+:root {
+    /* Colores base */
+    --bg: #0a0e27;
+    --panel: #141b2d;
+    --card: #1e2742;
+    --grid: #2a3441;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    
+    /* Colores de personas */
+    --jonatan: #3b82f6;
+    --mariana: #a855f7;
+    --caleb: #22c55e;
+    --catalina: #ec4899;
+    
+    /* Sombras */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
