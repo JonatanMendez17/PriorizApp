@@ -7,11 +7,16 @@ import { SELECTORS, EVENT_TYPES } from './constants.js';
 
 let contextMenuEvent = null;
 
-// Crear elemento de evento
-export function createEventElement(person, title, eventId = null) {
+/**
+ * Crea un elemento de evento
+ * @param {string} person - Persona asignada
+ * @param {string} title - Título de la actividad
+ * @param {string|number} eventId - ID único del evento
+ * @param {string} icon - Icono/emoji de la actividad
+ */
+export function createEventElement(person, title, eventId = null, icon = '') {
     const ev = document.createElement('div');
     ev.className = `event ${person}`;
-    ev.textContent = title;
     ev.draggable = true;
     ev.tabIndex = 0;
     
@@ -20,6 +25,10 @@ export function createEventElement(person, title, eventId = null) {
         eventId = getNextEventId();
     }
     ev.dataset.eventId = eventId;
+    
+    // Crear contenido con icono y título
+    const iconSpan = icon ? `<span class="event-icon">${icon}</span>` : '';
+    ev.innerHTML = `${iconSpan}<span class="event-title">${title}</span>`;
     
     // Event listeners
     ev.addEventListener(EVENT_TYPES.DRAG_START, handleDragStart);

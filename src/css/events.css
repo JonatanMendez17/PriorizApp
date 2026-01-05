@@ -14,17 +14,29 @@
     font-weight: 600;
     display: flex;
     align-items: center;
+    gap: 6px;
     cursor: move;
     user-select: none;
     outline: none;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     box-sizing: border-box;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.15);
     width: calc(100% - 4px);
+}
+
+.event-icon {
+    flex-shrink: 0;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.event-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
 }
 
 .event:hover {

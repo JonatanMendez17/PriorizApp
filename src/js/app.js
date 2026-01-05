@@ -142,6 +142,24 @@ function setupBackupListeners() {
 }
 
 /**
+ * Configura los event listeners del selector de iconos
+ */
+function setupIconSelectorListeners() {
+    const iconOptions = getElements('.icon-option');
+    const iconInput = getElement(SELECTORS.MODAL_ICON_INPUT);
+    
+    iconOptions.forEach(option => {
+        option.addEventListener(EVENT_TYPES.CLICK, () => {
+            const icon = option.dataset.icon;
+            if (iconInput) {
+                iconInput.value = icon;
+                iconInput.focus();
+            }
+        });
+    });
+}
+
+/**
  * Expone funciones globales necesarias para HTML
  */
 function exposeGlobalFunctions() {
@@ -171,6 +189,7 @@ export function init() {
         setupKeyboardListeners();
         setupContextMenuListeners();
         setupBackupListeners();
+        setupIconSelectorListeners();
         
         // Exponer funciones globales
         exposeGlobalFunctions();

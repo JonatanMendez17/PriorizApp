@@ -47,6 +47,8 @@ export function openModal(cell, event, isEdit = false) {
         saveButton.textContent = "Agregar";
         if (titleInput) titleInput.value = "";
         if (personSelect) personSelect.value = "jonatan";
+        const iconInput = getElement(SELECTORS.MODAL_ICON_INPUT);
+        if (iconInput) iconInput.value = "";
     }
     
     // Posicionar modal
@@ -65,8 +67,8 @@ function positionModal(modal, cell, event) {
     const clickX = event ? event.clientX : rect.left + rect.width / 2;
     const clickY = event ? event.clientY : rect.top + rect.height / 2;
     
-    const modalWidth = 280;
-    const modalHeight = 200;
+    const modalWidth = 360;
+    const modalHeight = 400;
     const padding = 10;
     
     let left = clickX - modalWidth / 2;
@@ -107,14 +109,19 @@ export function openEditModal(eventElement, clickEvent) {
     
     // Obtener datos del evento
     const person = getPersonFromEvent(eventElement);
-    const title = eventElement.textContent;
+    const iconElement = eventElement.querySelector('.event-icon');
+    const titleElement = eventElement.querySelector('.event-title');
+    const icon = iconElement ? iconElement.textContent : '';
+    const title = titleElement ? titleElement.textContent : eventElement.textContent;
     
     // Cargar datos en el modal
     const personSelect = getElement(SELECTORS.MODAL_PERSON);
     const titleInput = getElement(SELECTORS.MODAL_TITLE_INPUT);
+    const iconInput = getElement(SELECTORS.MODAL_ICON_INPUT);
     
     if (personSelect) personSelect.value = person;
     if (titleInput) titleInput.value = title;
+    if (iconInput) iconInput.value = icon;
     
     // Posicionar modal
     const rect = eventElement.getBoundingClientRect();
@@ -140,9 +147,11 @@ export function closeModal() {
     
     const titleInput = getElement(SELECTORS.MODAL_TITLE_INPUT);
     const personSelect = getElement(SELECTORS.MODAL_PERSON);
+    const iconInput = getElement(SELECTORS.MODAL_ICON_INPUT);
     
     if (titleInput) titleInput.value = "";
     if (personSelect) personSelect.value = "jonatan";
+    if (iconInput) iconInput.value = "";
 }
 
 /**
@@ -151,6 +160,7 @@ export function closeModal() {
 export function saveEventFromModal() {
     const personSelect = getElement(SELECTORS.MODAL_PERSON);
     const titleInput = getElement(SELECTORS.MODAL_TITLE_INPUT);
+    const iconInput = getElement(SELECTORS.MODAL_ICON_INPUT);
     
     if (!personSelect || !titleInput) {
         handleError(new Error('Elementos del formulario no encontrados'), 'saveEventFromModal');
@@ -159,6 +169,7 @@ export function saveEventFromModal() {
     
     const person = personSelect.value;
     const title = titleInput.value.trim();
+    const icon = iconInput ? iconInput.value.trim() : '';
     
     if (!isValid(title)) {
         return;
@@ -167,9 +178,12 @@ export function saveEventFromModal() {
     if (editingEvent) {
         // Editar evento existente
         editingEvent.className = `event ${person}`;
-        editingEvent.textContent = title;
         editingEvent.draggable = true;
         editingEvent.tabIndex = 0;
+        
+        // Actualizar contenido con icono
+        const iconSpan = icon ? `<span class="event-icon">${icon}</span>` : '';
+        editingEvent.innerHTML = `${iconSpan}<span class="event-title">${title}</span>`;
         
         const cell = editingEvent.parentElement;
         if (cell && cell.classList.contains('cell')) {
@@ -179,7 +193,7 @@ export function saveEventFromModal() {
         closeModal();
     } else if (selectedCell) {
         // Crear nuevo evento
-        const ev = createEventElement(person, title);
+        const ev = createEventElement(person, title, null, icon);
         selectedCell.appendChild(ev);
         updateEventPositions(selectedCell);
         saveEventsToStorage();

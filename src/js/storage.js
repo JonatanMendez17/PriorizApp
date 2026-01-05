@@ -35,12 +35,18 @@ export function saveEventsToStorage() {
     cells.forEach(cell => {
         const events = cell.querySelectorAll(SELECTORS.EVENT);
         events.forEach(event => {
+            const iconElement = event.querySelector('.event-icon');
+            const titleElement = event.querySelector('.event-title');
+            const icon = iconElement ? iconElement.textContent : '';
+            const title = titleElement ? titleElement.textContent : event.textContent;
+            
             allEvents.push({
                 id: event.dataset.eventId,
                 day: cell.dataset.day,
                 time: cell.dataset.time,
                 person: getPersonFromEvent(event),
-                title: event.textContent
+                title: title,
+                icon: icon
             });
         });
     });
@@ -60,7 +66,12 @@ export function loadEventsFromStorage() {
         events.forEach(eventData => {
             const cell = document.querySelector(`${SELECTORS.CELL}[data-day="${eventData.day}"][data-time="${eventData.time}"]`);
             if (cell) {
-                const ev = createEventElement(eventData.person, eventData.title, eventData.id);
+                const ev = createEventElement(
+                    eventData.person, 
+                    eventData.title, 
+                    eventData.id, 
+                    eventData.icon || ''
+                );
                 cell.appendChild(ev);
             }
         });
@@ -134,7 +145,12 @@ export function importBackup(event) {
             events.forEach(eventData => {
                 const cell = document.querySelector(`.cell[data-day="${eventData.day}"][data-time="${eventData.time}"]`);
                 if (cell) {
-                    const ev = createEventElement(eventData.person, eventData.title, eventData.id);
+                    const ev = createEventElement(
+                        eventData.person, 
+                        eventData.title, 
+                        eventData.id, 
+                        eventData.icon || ''
+                    );
                     cell.appendChild(ev);
                 }
             });

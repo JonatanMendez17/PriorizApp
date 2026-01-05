@@ -8,6 +8,7 @@ export const SELECTORS = {
     MODAL_CONTENT: '.modal-content',
     MODAL_TITLE_TEXT: '#modal-title-text',
     MODAL_TITLE_INPUT: '#modal-title',
+    MODAL_ICON_INPUT: '#modal-icon',
     MODAL_PERSON: '#modal-person',
     MODAL_SAVE_BTN: '.modal-actions button:first-child',
     CLOSE_BTN: '.close',
