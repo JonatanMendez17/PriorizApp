@@ -3,6 +3,7 @@ import { createEventElement } from './events.js';
 import { updateEventPositions } from './calendar.js';
 import { getElements, handleError } from './utils.js';
 import { SELECTORS, STORAGE_VERSION } from './constants.js';
+import { showNotification, showConfirm } from './notifications.js';
 
 // Obtener el siguiente ID único para eventos
 export function getNextEventId() {
@@ -89,7 +90,7 @@ export function loadEventsFromStorage() {
 export function exportBackup() {
     const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
     if (!saved) {
-        alert('No hay actividades para exportar');
+        showNotification('No hay actividades para exportar', 'info', 3000);
         return;
     }
     
@@ -112,20 +113,20 @@ export function exportBackup() {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         
-        alert('✅ Copia de seguridad exportada correctamente');
+        showNotification(`Copia de seguridad exportada correctamente (${events.length} actividades)`, 'success', 4000);
     } catch (error) {
         handleError(error, 'exportBackup');
-        alert('❌ Error al exportar: ' + error.message);
+        showNotification('Error al exportar: ' + error.message, 'error', 5000);
     }
 }
 
 // Importar copia de seguridad
-export function importBackup(event) {
+export async function importBackup(event) {
     const file = event.target.files[0];
     if (!file) return;
     
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         try {
             const backup = JSON.parse(e.target.result);
             const events = backup.events || backup;
@@ -134,7 +135,13 @@ export function importBackup(event) {
                 throw new Error('Formato de archivo inválido');
             }
             
-            if (!confirm(`¿Estás seguro de que quieres importar ${events.length} actividades? Esto reemplazará todas las actividades actuales.`)) {
+            const confirmed = await showConfirm(
+                `¿Estás seguro de que quieres importar ${events.length} actividades? Esto reemplazará todas las actividades actuales.`,
+                'Importar Copia de Seguridad'
+            );
+            
+            if (!confirmed) {
+                event.target.value = '';
                 return;
             }
             
@@ -161,15 +168,15 @@ export function importBackup(event) {
             });
             saveEventsToStorage();
             
-            alert(`✅ ${events.length} actividades importadas correctamente`);
+            showNotification(`${events.length} actividades importadas correctamente`, 'success', 4000);
         } catch (error) {
             handleError(error, 'importBackup');
-            alert('❌ Error al importar: ' + error.message);
+            showNotification('Error al importar: ' + error.message, 'error', 5000);
         }
     };
     
     reader.onerror = function() {
-        alert('❌ Error al leer el archivo');
+        showNotification('Error al leer el archivo', 'error', 4000);
     };
     
     reader.readAsText(file);

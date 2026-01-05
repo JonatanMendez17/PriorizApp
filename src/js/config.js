@@ -6,10 +6,11 @@ export const CONFIG = {
     PEOPLE: ['jonatan', 'mariana', 'caleb', 'catalina'],
     STORAGE_KEY: 'organizador_semanal_actividades',
     EVENT_HEIGHT: 24,
-    EVENT_SPACING: 2,
-    EVENT_START_TOP: 2,
+    EVENT_SPACING: 8,
+    EVENT_START_TOP: 8,
     MIN_CELL_HEIGHT: 40,
-    CELL_PADDING: 4
+    CELL_PADDING: 8,
+    EVENT_HORIZONTAL_SPACING: 8
 };
 
 // Estado inicial de visibilidad de filtros

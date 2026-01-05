@@ -24,12 +24,15 @@ export function toggle(person) {
     
     visible[person] = !visible[person];
     getElements('.' + person).forEach(e => {
-        e.style.display = visible[person] ? 'flex' : 'none';
+        e.style.display = visible[person] ? 'inline-flex' : 'none';
     });
     
     // Actualizar posiciones de todas las celdas después de cambiar filtros
-    getElements(SELECTORS.CELL).forEach(cell => {
-        updateEventPositions(cell);
+    // Usar requestAnimationFrame para asegurar que el DOM se haya actualizado
+    requestAnimationFrame(() => {
+        getElements(SELECTORS.CELL).forEach(cell => {
+            updateEventPositions(cell);
+        });
     });
 }
 
