@@ -74,51 +74,62 @@ export function updateEventPositions(cell) {
     const allCells = Array.from(calendar.querySelectorAll('.cell'));
     const sameTimeCells = allCells.filter(c => c.dataset.time === timeValue);
 
-    // Personas activas en esta franja horaria (al menos un evento visible en cualquier día)
-    const activePeople = CONFIG.PEOPLE.filter(person =>
-        sameTimeCells.some(c => getVisiblePersonEvents(c, person).length > 0)
-    );
-
-    // Altura de la fila: suficiente para el máximo de eventos apilados por persona
+    // Altura de la fila: máximo de eventos apilados en cualquier celda de la franja
     let maxStack = 0;
     sameTimeCells.forEach(c => {
-        activePeople.forEach(person => {
+        CONFIG.PEOPLE.forEach(person => {
             const count = getVisiblePersonEvents(c, person).length;
             if (count > maxStack) maxStack = count;
         });
     });
 
-    const rowHeight = activePeople.length === 0
+    const rowHeight = maxStack === 0
         ? MIN_CELL_HEIGHT
         : Math.max(
             MIN_CELL_HEIGHT,
             EVENT_START_TOP + maxStack * (EV_H + EVENT_SPACING) - EVENT_SPACING + CELL_PADDING
           );
 
-    // Aplicar layout columnar a todas las celdas de la franja
+    // Espacio vertical disponible para eventos dentro de la fila
+    const totalAvail = rowHeight - EVENT_START_TOP - CELL_PADDING;
+
+    // Aplicar layout columnar a cada celda de forma independiente
     sameTimeCells.forEach(c => {
         c.style.height = rowHeight + 'px';
 
-        if (activePeople.length === 0) return;
+        // Personas con eventos en ESTA celda (columnas por celda, no por fila)
+        const cellPeople = CONFIG.PEOPLE.filter(p => getVisiblePersonEvents(c, p).length > 0);
+        if (cellPeople.length === 0) return;
 
         const cellWidth = c.getBoundingClientRect().width || 120;
         const availWidth = cellWidth - CELL_PADDING * 2;
         const colWidth = Math.floor(
-            (availWidth - COL_GAP * (activePeople.length - 1)) / activePeople.length
+            (availWidth - COL_GAP * (cellPeople.length - 1)) / cellPeople.length
         );
 
-        activePeople.forEach((person, colIdx) => {
+        // Modo ícono: cuando las 4 personas tienen eventos visibles en esta celda
+        const isIconOnly = cellPeople.length === CONFIG.PEOPLE.length;
+
+        cellPeople.forEach((person, colIdx) => {
             const personEvents = getVisiblePersonEvents(c, person);
+            const n = personEvents.length;
             const colX = CELL_PADDING + colIdx * (colWidth + COL_GAP);
 
+            // Expandir eventos para llenar el espacio vertical disponible
+            const evHeight = n >= maxStack
+                ? EV_H
+                : Math.max(EV_H, Math.floor((totalAvail - (n - 1) * EVENT_SPACING) / n));
+
             personEvents.forEach((ev, rowIdx) => {
-                ev.style.position = 'absolute';
-                ev.style.left   = colX + 'px';
-                ev.style.top    = (EVENT_START_TOP + rowIdx * (EV_H + EVENT_SPACING)) + 'px';
-                ev.style.width  = colWidth + 'px';
-                ev.style.maxWidth = colWidth + 'px';
-                ev.style.height = EV_H + 'px';
-                ev.style.minHeight = EV_H + 'px';
+                ev.classList.toggle('icon-only', isIconOnly);
+
+                ev.style.position  = 'absolute';
+                ev.style.left      = colX + 'px';
+                ev.style.top       = (EVENT_START_TOP + rowIdx * (evHeight + EVENT_SPACING)) + 'px';
+                ev.style.width     = colWidth + 'px';
+                ev.style.maxWidth  = colWidth + 'px';
+                ev.style.height    = evHeight + 'px';
+                ev.style.minHeight = evHeight + 'px';
             });
         });
     });

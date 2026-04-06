@@ -59,6 +59,19 @@
     z-index: 1000;
 }
 
+/* Modo compacto: solo ícono, sin texto */
+.event.icon-only {
+    justify-content: center;
+    padding: 4px 2px;
+}
+.event.icon-only .event-title {
+    display: none;
+}
+.event.icon-only .event-icon {
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
 /* Colores de personas */
 .jonatan { 
     background: linear-gradient(135deg, var(--jonatan) 0%, #2563eb 100%);
