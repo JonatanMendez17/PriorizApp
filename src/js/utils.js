@@ -3,18 +3,6 @@
  */
 
 /**
- * Obtiene elementos visibles de un array de elementos DOM
- * @param {NodeList|Array} elements - Lista de elementos
- * @returns {Array} - Elementos visibles
- */
-export function getVisibleElements(elements) {
-    return Array.from(elements).filter(element => {
-        const style = window.getComputedStyle(element);
-        return style.display !== 'none';
-    });
-}
-
-/**
  * Valida si un valor es válido
  * @param {*} value - Valor a validar
  * @returns {boolean}
