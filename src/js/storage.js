@@ -1,6 +1,6 @@
 import { CONFIG } from './config.js';
 import { createEventElement } from './events.js';
-import { updateEventPositions } from './calendar.js';
+import { updateAllEventPositions } from './calendar.js';
 import { getElements, handleError } from './utils.js';
 import { SELECTORS, STORAGE_VERSION } from './constants.js';
 import { showNotification, showConfirm } from './notifications.js';
@@ -77,10 +77,7 @@ export function loadEventsFromStorage() {
             }
         });
         
-        // Actualizar posiciones de todas las celdas
-        getElements(SELECTORS.CELL).forEach(cell => {
-            updateEventPositions(cell);
-        });
+        updateAllEventPositions();
     } catch (error) {
         handleError(error, 'loadEventsFromStorage');
     }
@@ -162,10 +159,7 @@ export async function importBackup(event) {
                 }
             });
             
-            // Actualizar posiciones y guardar
-            getElements(SELECTORS.CELL).forEach(cell => {
-                updateEventPositions(cell);
-            });
+            updateAllEventPositions();
             saveEventsToStorage();
             
             showNotification(`${events.length} actividades importadas correctamente`, 'success', 4000);

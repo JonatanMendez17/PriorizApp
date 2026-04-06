@@ -46,11 +46,13 @@ export function createCalendar() {
 }
 
 /**
- * Retorna los eventos visibles de una persona en una celda
+ * Retorna los eventos visibles de una persona en una celda.
+ * Usa style.display en lugar de getComputedStyle para evitar
+ * forzar un recalculo de estilos por cada evento.
  */
 function getVisiblePersonEvents(cell, person) {
     return Array.from(cell.querySelectorAll(`.event.${person}`))
-        .filter(ev => window.getComputedStyle(ev).display !== 'none');
+        .filter(ev => ev.style.display !== 'none');
 }
 
 /**
@@ -72,7 +74,7 @@ export function updateEventPositions(cell) {
 
     const timeValue = cell.dataset.time;
     const allCells = Array.from(calendar.querySelectorAll('.cell'));
-    const sameTimeCells = allCells.filter(c => c.dataset.time === timeValue);
+    const sameTimeCells = Array.from(calendar.querySelectorAll(`.cell[data-time="${timeValue}"]`));
 
     // Altura de la fila: máximo de eventos apilados en cualquier celda de la franja
     let maxStack = 0;
@@ -143,5 +145,115 @@ export function updateEventPositions(cell) {
         allTimes[rowIndex].style.height = rowHeight + 'px';
         allTimes[rowIndex].style.minHeight = rowHeight + 'px';
     }
+}
+
+/**
+ * Actualiza las posiciones de todos los eventos del calendario en un único
+ * recorrido del DOM, evitando thrashing de reflow al separar lecturas y escrituras.
+ * Usar en lugar de llamar updateEventPositions() por cada celda.
+ */
+export function updateAllEventPositions() {
+    const calendarEl = getElement(SELECTORS.CALENDAR);
+    if (!calendarEl) return;
+
+    const EV_H = 24;
+    const COL_GAP = 4;
+    const { EVENT_SPACING, EVENT_START_TOP, MIN_CELL_HEIGHT, CELL_PADDING } = CONFIG;
+    const totalDays = CONFIG.DAYS.length - 1;
+
+    // ── LECTURA ──────────────────────────────────────────────────────────────
+    const allCells = Array.from(calendarEl.querySelectorAll('.cell'));
+    const allTimes = Array.from(calendarEl.querySelectorAll(SELECTORS.TIME));
+
+    // Agrupar celdas por franja horaria (preservando orden de aparición)
+    const timeGroups = new Map();
+    allCells.forEach(cell => {
+        const t = cell.dataset.time;
+        if (!timeGroups.has(t)) timeGroups.set(t, []);
+        timeGroups.get(t).push(cell);
+    });
+
+    // Leer todos los anchos de celda de una vez (un único reflow de layout)
+    const cellWidths = new Map();
+    allCells.forEach(cell => {
+        cellWidths.set(cell, cell.getBoundingClientRect().width || 120);
+    });
+
+    // ── CÁLCULO ───────────────────────────────────────────────────────────────
+    // Precalcular layout para cada franja sin tocar el DOM todavía
+    const rowResults = [];
+    let timeRowIdx = 0;
+
+    timeGroups.forEach(sameTimeCells => {
+        // Máximo de eventos apilados en cualquier celda de la franja
+        let maxStack = 0;
+        sameTimeCells.forEach(c => {
+            CONFIG.PEOPLE.forEach(person => {
+                const count = getVisiblePersonEvents(c, person).length;
+                if (count > maxStack) maxStack = count;
+            });
+        });
+
+        const rowHeight = maxStack === 0
+            ? MIN_CELL_HEIGHT
+            : Math.max(MIN_CELL_HEIGHT,
+                EVENT_START_TOP + maxStack * (EV_H + EVENT_SPACING) - EVENT_SPACING + CELL_PADDING);
+
+        const totalAvail = rowHeight - EVENT_START_TOP - CELL_PADDING;
+
+        const cellLayouts = sameTimeCells.map(c => {
+            const cellPeople = CONFIG.PEOPLE.filter(p => getVisiblePersonEvents(c, p).length > 0);
+            const isIconOnly = cellPeople.length === CONFIG.PEOPLE.length;
+            const cellWidth  = cellWidths.get(c);
+            const availWidth = cellWidth - CELL_PADDING * 2;
+            const colCount   = cellPeople.length;
+            const colWidth   = colCount > 0
+                ? Math.floor((availWidth - COL_GAP * (colCount - 1)) / colCount)
+                : 0;
+
+            const evUpdates = [];
+            cellPeople.forEach((person, colIdx) => {
+                const personEvents = getVisiblePersonEvents(c, person);
+                const n       = personEvents.length;
+                const colX    = CELL_PADDING + colIdx * (colWidth + COL_GAP);
+                const evHeight = n >= maxStack
+                    ? EV_H
+                    : Math.max(EV_H, Math.floor((totalAvail - (n - 1) * EVENT_SPACING) / n));
+
+                personEvents.forEach((ev, rowIdx) => {
+                    evUpdates.push({ ev, isIconOnly, colX, rowIdx, evHeight, colWidth, EVENT_START_TOP, EVENT_SPACING });
+                });
+            });
+
+            return { cell: c, rowHeight, evUpdates };
+        });
+
+        rowResults.push({ cellLayouts, rowHeight, timeRowIdx });
+        timeRowIdx++;
+    });
+
+    // ── ESCRITURA ─────────────────────────────────────────────────────────────
+    // Aplicar todos los cambios al DOM de una vez
+    rowResults.forEach(({ cellLayouts, rowHeight, timeRowIdx: tri }) => {
+        cellLayouts.forEach(({ cell, evUpdates }) => {
+            cell.style.height = rowHeight + 'px';
+
+            evUpdates.forEach(({ ev, isIconOnly, colX, rowIdx, evHeight, colWidth, EVENT_START_TOP, EVENT_SPACING }) => {
+                ev.classList.toggle('icon-only', isIconOnly);
+                ev.style.position  = 'absolute';
+                ev.style.left      = colX + 'px';
+                ev.style.top       = (EVENT_START_TOP + rowIdx * (evHeight + EVENT_SPACING)) + 'px';
+                ev.style.width     = colWidth + 'px';
+                ev.style.maxWidth  = colWidth + 'px';
+                ev.style.height    = evHeight + 'px';
+                ev.style.minHeight = evHeight + 'px';
+            });
+        });
+
+        if (tri < allTimes.length) {
+            allTimes[tri].style.height    = rowHeight + 'px';
+            allTimes[tri].style.minHeight = rowHeight + 'px';
+        }
+    });
 }
 

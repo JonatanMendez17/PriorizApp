@@ -5,7 +5,7 @@
 
 import { SELECTORS, KEYBOARD_KEYS, EVENT_TYPES } from './constants.js';
 import { getElement, getElements, handleError } from './utils.js';
-import { createCalendar, updateEventPositions } from './calendar.js';
+import { createCalendar, updateEventPositions, updateAllEventPositions } from './calendar.js';
 import { loadEventsFromStorage, exportBackup, importBackup, saveEventsToStorage } from './storage.js';
 import { openModal, closeModal, saveEventFromModal } from './modal.js';
 import { handleDragOver, handleDragLeave, handleDrop } from './dragDrop.js';

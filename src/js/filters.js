@@ -1,6 +1,5 @@
-import { updateEventPositions } from './calendar.js';
+import { updateAllEventPositions } from './calendar.js';
 import { getElements } from './utils.js';
-import { SELECTORS } from './constants.js';
 
 /**
  * Estado de visibilidad de filtros
@@ -12,6 +11,8 @@ export let visible = {
     catalina: false
 };
 
+let pendingRaf = null;
+
 /**
  * Aplica el estado actual de visibilidad a todos los eventos del DOM
  */
@@ -22,9 +23,7 @@ export function applyFilters() {
         });
     });
     requestAnimationFrame(() => {
-        getElements(SELECTORS.CELL).forEach(cell => {
-            updateEventPositions(cell);
-        });
+        updateAllEventPositions();
     });
 }
 
@@ -37,18 +36,17 @@ export function toggle(person) {
         console.warn(`Persona "${person}" no encontrada en filtros`);
         return;
     }
-    
+
     visible[person] = !visible[person];
     getElements('.' + person).forEach(e => {
         e.style.display = visible[person] ? 'inline-flex' : 'none';
     });
-    
-    // Actualizar posiciones de todas las celdas después de cambiar filtros
-    // Usar requestAnimationFrame para asegurar que el DOM se haya actualizado
-    requestAnimationFrame(() => {
-        getElements(SELECTORS.CELL).forEach(cell => {
-            updateEventPositions(cell);
-        });
+
+    // Cancelar RAF previo para que toggles rápidos generen un solo recálculo
+    if (pendingRaf) cancelAnimationFrame(pendingRaf);
+    pendingRaf = requestAnimationFrame(() => {
+        pendingRaf = null;
+        updateAllEventPositions();
     });
 }
 
