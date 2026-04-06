@@ -182,8 +182,17 @@ export function saveEventFromModal() {
         editingEvent.tabIndex = 0;
         
         // Actualizar contenido con icono
-        const iconSpan = icon ? `<span class="event-icon">${icon}</span>` : '';
-        editingEvent.innerHTML = `${iconSpan}<span class="event-title">${title}</span>`;
+        editingEvent.innerHTML = '';
+        if (icon) {
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'event-icon';
+            iconSpan.textContent = icon;
+            editingEvent.appendChild(iconSpan);
+        }
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'event-title';
+        titleSpan.textContent = title;
+        editingEvent.appendChild(titleSpan);
         
         const cell = editingEvent.parentElement;
         if (cell && cell.classList.contains('cell')) {

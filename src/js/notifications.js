@@ -28,11 +28,22 @@ export function showNotification(message, type = 'info', duration = 3000) {
         info: 'ℹ'
     };
     
-    notification.innerHTML = `
-        <div class="notification-icon">${icons[type] || icons.info}</div>
-        <div class="notification-message">${message}</div>
-        <button class="notification-close" aria-label="Cerrar">×</button>
-    `;
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'notification-icon';
+    iconDiv.textContent = icons[type] || icons.info;
+
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'notification-message';
+    msgDiv.textContent = message;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'notification-close';
+    closeBtn.setAttribute('aria-label', 'Cerrar');
+    closeBtn.textContent = '×';
+
+    notification.appendChild(iconDiv);
+    notification.appendChild(msgDiv);
+    notification.appendChild(closeBtn);
     
     // Agregar al contenedor
     container.appendChild(notification);
@@ -48,7 +59,6 @@ export function showNotification(message, type = 'info', duration = 3000) {
     }, duration);
     
     // Cerrar manualmente
-    const closeBtn = notification.querySelector('.notification-close');
     closeBtn.addEventListener('click', () => {
         clearTimeout(timeout);
         closeNotification(notification);
@@ -93,18 +103,34 @@ export function showConfirm(message, title = 'Confirmar') {
         const dialog = document.createElement('div');
         dialog.className = 'confirm-dialog';
         
-        dialog.innerHTML = `
-            <div class="confirm-header">
-                <h3 class="confirm-title">${title}</h3>
-            </div>
-            <div class="confirm-body">
-                <p class="confirm-message">${message}</p>
-            </div>
-            <div class="confirm-actions">
-                <button class="confirm-btn confirm-btn-cancel">Cancelar</button>
-                <button class="confirm-btn confirm-btn-ok">Aceptar</button>
-            </div>
-        `;
+        const header = document.createElement('div');
+        header.className = 'confirm-header';
+        const h3 = document.createElement('h3');
+        h3.className = 'confirm-title';
+        h3.textContent = title;
+        header.appendChild(h3);
+
+        const body = document.createElement('div');
+        body.className = 'confirm-body';
+        const p = document.createElement('p');
+        p.className = 'confirm-message';
+        p.textContent = message;
+        body.appendChild(p);
+
+        const actions = document.createElement('div');
+        actions.className = 'confirm-actions';
+        const cancelBtnEl = document.createElement('button');
+        cancelBtnEl.className = 'confirm-btn confirm-btn-cancel';
+        cancelBtnEl.textContent = 'Cancelar';
+        const okBtnEl = document.createElement('button');
+        okBtnEl.className = 'confirm-btn confirm-btn-ok';
+        okBtnEl.textContent = 'Aceptar';
+        actions.appendChild(cancelBtnEl);
+        actions.appendChild(okBtnEl);
+
+        dialog.appendChild(header);
+        dialog.appendChild(body);
+        dialog.appendChild(actions);
         
         overlay.appendChild(dialog);
         document.body.appendChild(overlay);
@@ -113,10 +139,6 @@ export function showConfirm(message, title = 'Confirmar') {
         requestAnimationFrame(() => {
             overlay.classList.add('show');
         });
-        
-        // Botones
-        const cancelBtn = dialog.querySelector('.confirm-btn-cancel');
-        const okBtn = dialog.querySelector('.confirm-btn-ok');
         
         const close = (result) => {
             overlay.classList.remove('show');
@@ -129,8 +151,8 @@ export function showConfirm(message, title = 'Confirmar') {
             }, 200);
         };
         
-        cancelBtn.addEventListener('click', () => close(false));
-        okBtn.addEventListener('click', () => close(true));
+        cancelBtnEl.addEventListener('click', () => close(false));
+        okBtnEl.addEventListener('click', () => close(true));
         
         // Cerrar con Escape
         const handleEscape = (e) => {
@@ -149,7 +171,7 @@ export function showConfirm(message, title = 'Confirmar') {
         });
         
         // Enfocar botón de cancelar por defecto
-        cancelBtn.focus();
+        cancelBtnEl.focus();
     });
 }
 

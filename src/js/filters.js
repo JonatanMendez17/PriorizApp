@@ -13,6 +13,22 @@ export let visible = {
 };
 
 /**
+ * Aplica el estado actual de visibilidad a todos los eventos del DOM
+ */
+export function applyFilters() {
+    Object.entries(visible).forEach(([person, isVisible]) => {
+        getElements('.' + person).forEach(el => {
+            el.style.display = isVisible ? 'inline-flex' : 'none';
+        });
+    });
+    requestAnimationFrame(() => {
+        getElements(SELECTORS.CELL).forEach(cell => {
+            updateEventPositions(cell);
+        });
+    });
+}
+
+/**
  * Toggle de visibilidad de filtro
  * @param {string} person - Nombre de la persona
  */

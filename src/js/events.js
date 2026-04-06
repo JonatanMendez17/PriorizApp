@@ -27,8 +27,17 @@ export function createEventElement(person, title, eventId = null, icon = '') {
     ev.dataset.eventId = eventId;
     
     // Crear contenido con icono y título
-    const iconSpan = icon ? `<span class="event-icon">${icon}</span>` : '';
-    ev.innerHTML = `${iconSpan}<span class="event-title">${title}</span>`;
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'event-title';
+    titleSpan.textContent = title;
+
+    if (icon) {
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'event-icon';
+        iconSpan.textContent = icon;
+        ev.appendChild(iconSpan);
+    }
+    ev.appendChild(titleSpan);
     
     // Event listeners
     ev.addEventListener(EVENT_TYPES.DRAG_START, handleDragStart);
@@ -47,10 +56,13 @@ function handleEventClick(e) {
     // Duplicar con Alt + clic
     if (e.altKey) {
         const person = getPersonFromEvent(this);
-        const title = this.textContent;
+        const titleElement = this.querySelector('.event-title');
+        const title = titleElement ? titleElement.textContent : this.textContent;
+        const iconElement = this.querySelector('.event-icon');
+        const icon = iconElement ? iconElement.textContent : '';
         const originalCell = this.parentElement;
-        
-        const duplicate = createEventElement(person, title);
+
+        const duplicate = createEventElement(person, title, null, icon);
         originalCell.appendChild(duplicate);
         updateEventPositions(originalCell);
         saveEventsToStorage();
@@ -64,20 +76,6 @@ function handleEventContextMenu(e) {
     contextMenuEvent = this;
     showContextMenu(e.clientX, e.clientY);
 }
-
-// Duplicar evento
-function duplicateEvent(eventElement, clickEvent) {
-    const person = getPersonFromEvent(eventElement);
-    const title = eventElement.textContent;
-    const originalCell = eventElement.parentElement;
-    
-    const duplicate = createEventElement(person, title);
-    originalCell.appendChild(duplicate);
-    updateEventPositions(originalCell);
-    saveEventsToStorage();
-}
-
-export { duplicateEvent };
 
 // Obtener evento seleccionado en menú contextual
 export function getContextMenuEvent() {

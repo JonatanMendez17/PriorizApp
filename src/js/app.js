@@ -3,14 +3,13 @@
  * Centraliza la configuración de event listeners y la inicialización
  */
 
-import { CONFIG, initialVisibility } from './config.js';
 import { SELECTORS, KEYBOARD_KEYS, EVENT_TYPES } from './constants.js';
 import { getElement, getElements, handleError } from './utils.js';
 import { createCalendar, updateEventPositions } from './calendar.js';
 import { loadEventsFromStorage, exportBackup, importBackup, saveEventsToStorage } from './storage.js';
 import { openModal, closeModal, saveEventFromModal } from './modal.js';
 import { handleDragOver, handleDragLeave, handleDrop } from './dragDrop.js';
-import { toggle } from './filters.js';
+import { toggle, applyFilters } from './filters.js';
 import { addFromContextMenu, editFromContextMenu, deleteFromContextMenu, hideContextMenu } from './contextMenu.js';
 
 /**
@@ -55,6 +54,17 @@ function setupModalListeners() {
     const closeBtn = getElement(SELECTORS.CLOSE_BTN);
     if (closeBtn) {
         closeBtn.addEventListener(EVENT_TYPES.CLICK, closeModal);
+    }
+
+    // Guardar con Enter desde el input de título
+    const titleInput = getElement(SELECTORS.MODAL_TITLE_INPUT);
+    if (titleInput) {
+        titleInput.addEventListener(EVENT_TYPES.KEYDOWN, (e) => {
+            if (e.key === KEYBOARD_KEYS.ENTER) {
+                e.preventDefault();
+                saveEventFromModal();
+            }
+        });
     }
 }
 
@@ -163,8 +173,6 @@ function setupIconSelectorListeners() {
  * Expone funciones globales necesarias para HTML
  */
 function exposeGlobalFunctions() {
-    window.exportBackup = exportBackup;
-    window.importBackup = importBackup;
     window.toggle = toggle;
     window.closeModal = closeModal;
     window.saveEventFromModal = saveEventFromModal;
@@ -175,14 +183,11 @@ function exposeGlobalFunctions() {
  */
 export function init() {
     try {
-        // Crear calendario
+        // Crear calendario y configurar listeners
         createCalendar();
-        
-        // Configurar event listeners después de crear el calendario
-        setTimeout(() => {
-            setupCellListeners();
-            loadEventsFromStorage();
-        }, 0);
+        setupCellListeners();
+        loadEventsFromStorage();
+        applyFilters();
         
         // Configurar otros listeners
         setupModalListeners();

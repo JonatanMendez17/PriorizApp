@@ -13,11 +13,4 @@ export const CONFIG = {
     EVENT_HORIZONTAL_SPACING: 8
 };
 
-// Estado inicial de visibilidad de filtros
-export const initialVisibility = {
-    jonatan: true,
-    mariana: false,
-    caleb: false,
-    catalina: false
-};
 

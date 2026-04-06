@@ -146,7 +146,7 @@ export async function importBackup(event) {
             }
             
             // Limpiar actividades actuales
-            getElements(SELECTORS.EVENT).forEach(event => event.remove());
+            getElements(SELECTORS.EVENT).forEach(el => el.remove());
             
             // Cargar nuevas actividades
             events.forEach(eventData => {

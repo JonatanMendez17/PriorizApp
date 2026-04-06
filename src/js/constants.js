@@ -26,7 +26,8 @@ export const SELECTORS = {
 export const KEYBOARD_KEYS = {
     ESCAPE: 'Escape',
     DELETE: 'Delete',
-    BACKSPACE: 'Backspace'
+    BACKSPACE: 'Backspace',
+    ENTER: 'Enter'
 };
 
 export const EVENT_TYPES = {
