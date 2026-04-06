@@ -4,24 +4,24 @@
 
 .event {
     position: absolute;
-    min-height: 24px;
+    min-height: 26px;
     height: auto;
-    border-radius: 8px;
-    font-size: 12px;
-    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    padding: 4px 8px;
     color: white;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     cursor: move;
     user-select: none;
     outline: none;
     overflow: hidden;
     box-sizing: border-box;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     width: auto;
     max-width: 100%;
     white-space: nowrap;

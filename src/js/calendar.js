@@ -56,7 +56,15 @@ export function updateEventPositions(cell) {
     
     const allEvents = Array.from(cell.querySelectorAll(SELECTORS.EVENT));
     const visibleEvents = getVisibleElements(allEvents);
-    const { EVENT_SPACING, EVENT_START_TOP, MIN_CELL_HEIGHT, CELL_PADDING, EVENT_HORIZONTAL_SPACING } = CONFIG;
+
+    // Ordenar eventos por persona para agruparlos visualmente
+    visibleEvents.sort((a, b) => {
+        const ia = CONFIG.PEOPLE.findIndex(p => a.classList.contains(p));
+        const ib = CONFIG.PEOPLE.findIndex(p => b.classList.contains(p));
+        return ia - ib;
+    });
+
+    const { EVENT_SPACING, EVENT_START_TOP, MIN_CELL_HEIGHT, CELL_PADDING, EVENT_HORIZONTAL_SPACING, MIN_EVENT_WIDTH } = CONFIG;
     
     const totalVisibleEvents = visibleEvents.length;
     const MIN_EVENT_HEIGHT = 24;
@@ -108,18 +116,16 @@ export function updateEventPositions(cell) {
         
         events.forEach((event, index) => {
             const size = eventSizes[index];
-            const eventWidth = size.width;
+            // Respetar ancho mínimo para que los eventos siempre sean legibles
+            const eventWidth = Math.max(size.width, MIN_EVENT_WIDTH);
             const eventHeight = size.height;
-            
-            // Si el evento cabe en la fila actual
-            const neededWidth = currentRow.length === 0 
-                ? eventWidth 
+
+            const neededWidth = currentRow.length === 0
+                ? eventWidth
                 : currentRowWidth + EVENT_HORIZONTAL_SPACING + eventWidth;
-            
-            // Limitar el ancho del evento al espacio disponible
-            const maxEventWidth = availableWidth - (currentRow.length > 0 ? EVENT_HORIZONTAL_SPACING : 0);
-            const finalEventWidth = Math.min(eventWidth, maxEventWidth);
-            
+
+            const finalEventWidth = Math.min(eventWidth, availableWidth);
+
             if (neededWidth <= availableWidth) {
                 const x = currentRow.length === 0 ? 0 : currentRowWidth + EVENT_HORIZONTAL_SPACING;
                 currentRow.push({ event, x, width: finalEventWidth, height: eventHeight });

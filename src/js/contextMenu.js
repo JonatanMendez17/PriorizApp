@@ -60,14 +60,8 @@ export function addFromContextMenu() {
         return;
     }
     
-    const rect = contextMenuEvent.getBoundingClientRect();
-    const fakeEvent = {
-        clientX: rect.left + rect.width / 2,
-        clientY: rect.top + rect.height / 2
-    };
-    
     hideContextMenu();
-    openModal(cell, fakeEvent);
+    openModal(cell, null);
 }
 
 /**
@@ -81,12 +75,7 @@ export function editFromContextMenu() {
     }
     
     hideContextMenu();
-    const rect = contextMenuEvent.getBoundingClientRect();
-    const fakeEvent = {
-        clientX: rect.left + rect.width / 2,
-        clientY: rect.top + rect.height / 2
-    };
-    openEditModal(contextMenuEvent, fakeEvent);
+    openEditModal(contextMenuEvent);
 }
 
 /**

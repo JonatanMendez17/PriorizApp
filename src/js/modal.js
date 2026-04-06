@@ -51,41 +51,11 @@ export function openModal(cell, event, isEdit = false) {
         if (iconInput) iconInput.value = "";
     }
     
-    // Posicionar modal
-    positionModal(modal, cell, event);
-    
     // Mostrar y enfocar
     modal.style.display = "block";
     setTimeout(() => {
         if (titleInput) titleInput.focus();
     }, 10);
-}
-
-// Posicionar modal cerca del clic
-function positionModal(modal, cell, event) {
-    const rect = cell.getBoundingClientRect();
-    const clickX = event ? event.clientX : rect.left + rect.width / 2;
-    const clickY = event ? event.clientY : rect.top + rect.height / 2;
-    
-    const modalWidth = 360;
-    const modalHeight = 400;
-    const padding = 10;
-    
-    let left = clickX - modalWidth / 2;
-    let top = clickY + rect.height / 2 + padding;
-    
-    // Ajustar si se sale de la pantalla
-    if (left < padding) left = padding;
-    if (left + modalWidth > window.innerWidth - padding) {
-        left = window.innerWidth - modalWidth - padding;
-    }
-    if (top + modalHeight > window.innerHeight - padding) {
-        top = clickY - modalHeight - padding;
-    }
-    if (top < padding) top = padding;
-    
-    modal.style.left = left + 'px';
-    modal.style.top = top + 'px';
 }
 
 /**
@@ -123,14 +93,7 @@ export function openEditModal(eventElement, clickEvent) {
     if (titleInput) titleInput.value = title;
     if (iconInput) iconInput.value = icon;
     
-    // Posicionar modal
-    const rect = eventElement.getBoundingClientRect();
-    const fakeEvent = {
-        clientX: rect.left + rect.width / 2,
-        clientY: rect.top + rect.height / 2
-    };
-    
-    openModal(cell, fakeEvent, true);
+    openModal(cell, null, true);
 }
 
 /**
